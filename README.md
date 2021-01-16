@@ -1,8 +1,8 @@
 # MOUSE-control
 
-## control the mouse with your mouse remote via internet with spycamera
+## control the spying mouse with your mouse remote via internet
 ## actions:
-## - scroll up
-## - scroll down
-## - click left
-## - click right
+## - scroll up = drive forwards
+## - scroll down = drive backwards
+## - click left = drive left
+## - click right = drive right
