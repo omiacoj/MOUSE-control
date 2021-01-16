@@ -1,0 +1,161 @@
+<html>
+
+<head>
+    <title>Client</title>
+
+
+
+    <meta name='viewport' content='user-scalable=no,initial-scale=1.0,maximum-scale=1.0' />
+    <style>
+        body {
+            /*
+            padding: 0 24px 0 24px;
+            background-color: #ccc;
+            */
+        }
+
+        #main {
+            margin: 0 auto 0 auto;
+        }
+
+        .rotate90 {
+            -webkit-transform: rotate(-90deg);
+            -moz-transform: rotate(-90deg);
+            -o-transform: rotate(-90deg);
+            -ms-transform: rotate(-90deg);
+            transform: rotate(-90deg);
+        }
+    </style>
+
+</head>
+
+<body>
+    <img src="" class="rotate90" width="600" height="300">
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mqtt/4.2.6/mqtt.min.js"></script>
+<script>
+
+    var client = mqtt.connect('ws://13.81.105.139/ws');
+    const img = document.querySelector('img');
+    let dir = 0;
+
+    client.on('connect', function () {
+        client.subscribe('/espcamera/stream', function (err) {
+            if (!err) {
+                // client.publish('/espcamera/stream', 'Hello mqtt')
+                console.log('subscribed');
+            }
+        })
+    })
+
+    client.on('message', function (topic, message) {
+        // console.log(message.toString());
+        console.log(topic);
+        if (topic === "/espcamera/stream") {
+            img.src = `data:image/png;base64, ${message}`;
+        }
+    })
+
+    function sends(command) {
+        console.log(command);
+
+        client.publish('/espcamera/mousemovement', command);
+    }
+
+    function detectMouseWheelDirection(e) {
+        var delta = null,
+            direction = false;
+        if (!e) { // if the event is not provided, we get it from the window object
+            e = window.event;
+        }
+        if (e.wheelDelta) { // will work in most cases
+            delta = e.wheelDelta / 60;
+        } else if (e.detail) { // fallback for Firefox
+            delta = -e.detail / 2;
+        }
+        if (delta !== null) {
+            direction = delta > 0 ? 'up' : 'down';
+        }
+
+        return direction;
+    }
+
+    function handleMouseWheelDirection(direction) {
+        console.log(direction);
+        if (dir == 0 && direction == 'down') {
+            sends("down");
+            dir = -1;
+
+        } else if (dir == 1 && direction == 'down') {
+            sends("stop");
+            dir = 0;
+
+        } else if (dir == 0 && direction == 'up') {
+            sends("up");
+            dir = 1;
+
+        } else if (dir == -1 && direction == 'up') {
+            sends("stop");
+            dir = 0;
+        }
+    }
+
+    document.onmousewheel = function (e) {
+        handleMouseWheelDirection(detectMouseWheelDirection(e));
+        //e.preventDefault();
+    };
+    if (window.addEventListener) {
+        document.addEventListener('DOMMouseScroll', function (e) {
+            handleMouseWheelDirection(detectMouseWheelDirection(e));
+            e.preventDefault();
+        });
+    }
+
+    /*window.onload = function () {
+     document.ontouchmove = function (e) { e.preventDefault(); };
+     var cv = document.getElementById('main');
+     var ctop = cv.offsetTop;
+     var c = cv.getContext('2d');
+     function clr() {
+         //c.fillStyle = '#fff';
+         c.rect(0, 0, 255, 255);
+         //c.fill();
+     }
+     function t(e) {
+         e.preventDefault();
+         var x, y, u = e.touches[0];
+         if (u) {
+             x = u.clientX;
+             y = u.clientY - ctop;
+             c.beginPath();
+             c.fillStyle = 'rgba(96,96,208,0.5)';
+             c.arc(x, y, 5, 0, Math.PI * 2, true);
+             c.fill();
+             c.closePath();
+         } else {
+             x = 127;
+             y = 127;
+         }
+         x = '000' + x.toString(16);
+         y = '000' + y.toString(16);
+         if (ws.readyState === ws.CLOSED) { ws = nw(); }
+         ws.send('#' + x.substr(-4) + y.substr(-4));
+     }
+
+     cv.ontouchstart = function (e) {
+         t(e);
+         clr();
+     };
+     cv.ontouchmove = t;
+     cv.ontouchend = t;
+     clr();
+ }
+*/
+
+
+
+
+</script>
+
+</html>
