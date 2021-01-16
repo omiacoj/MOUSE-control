@@ -8,16 +8,23 @@
 
 ![](https://github.com/omiacoj/MOUSE-control/blob/master/images/mouse-control.PNG)
 
-
+#
+#
+#
 ## actions:
 ## - scroll up = drive forwards
 ## - scroll down = drive backwards
 ## - click left = drive left
 ## - click right = drive right
 
+#
+#
+#
+
+
 ![](https://github.com/omiacoj/MOUSE-control/blob/master/images/Capture.PNG)
 
-![](https://github.com/omiacoj/MOUSE-control/blob/master/images/internet2.jpeg)
+
 
 ![](https://github.com/omiacoj/MOUSE-control/blob/master/images/Uploadcode-arduino-esp32.jpg)
 
